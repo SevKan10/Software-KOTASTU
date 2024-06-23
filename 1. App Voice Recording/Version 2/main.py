@@ -129,3 +129,4 @@ keyboard.add_hotkey('windows+ctrl+alt+shift+m', listenAndEnter)
 keyboard.add_hotkey('windows+ctrl+alt+shift+h', listenAndControl)
 root.mainloop()
 #----------------------------------------------------------------------------------------------------------------------------------
+#Code by SevKan

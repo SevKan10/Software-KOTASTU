@@ -134,3 +134,4 @@ function stopDevice()
     xhr.send();
     console.log("Send stop"); 
 }
+//Code by SevKan
