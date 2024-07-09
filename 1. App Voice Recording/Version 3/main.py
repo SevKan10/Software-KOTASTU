@@ -121,7 +121,7 @@ mic = sr.Microphone()
 pygame.mixer.init()
 
 # Tạo phím tắt
-keyboard.add_hotkey('ctrl+m', listenAndEnter) #windows+ctrl+alt+shift+m
-keyboard.add_hotkey('ctrl+h', listenAndControl)
+keyboard.add_hotkey('windows+ctrl+alt+shift+m', listenAndEnter) #windows+ctrl+alt+shift+m
+keyboard.add_hotkey('windows+ctrl+alt+shift+h', listenAndControl)
 
 root.mainloop()
