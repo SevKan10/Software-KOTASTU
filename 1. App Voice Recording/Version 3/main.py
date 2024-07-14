@@ -14,7 +14,7 @@ def pasteString(message):
     print("Đã dán tin nhắn: ", message)
 
 # Hàm gửi dữ liệu lên Blynk
-def sendData(pin, value, i):
+def sendData(pin, value, i): 
     url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&{pin}={value}"
     response = requests.get(url)
     
