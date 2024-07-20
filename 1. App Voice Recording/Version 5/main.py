@@ -25,6 +25,16 @@ def printSign(signDef):
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
+# Hàm xử lý click đúp vào danh bạ
+def onDoubleClick(event):
+    selected = phone_listbox.curselection()
+    if selected:
+        entry = phone_listbox.get(selected[0])
+        phone_number = entry.split(":")[1]  # Lấy số điện thoại từ chuỗi
+        sendPhoneNumber(phone_number)
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
 # Hàm gửi số điện thoại lên Blynk
 def sendPhoneNumber(phone_number): 
     url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&v2={phone_number}"
@@ -247,16 +257,6 @@ def callPhoneNumber():
             messagebox.showwarning("Cảnh báo", "Số điện thoại không thể để trống.", parent=top)
 
     tk.Button(top, text="Gọi", command=on_submit, bg='#018ABE', fg='#D6E8EE', font=('Helvetica', 12, 'bold')).pack(pady=10)
-
-#----------------------------------------------------------------------------------------------------------------------------------
-
-# Hàm xử lý click đúp vào danh bạ
-def onDoubleClick():
-    selected = phone_listbox.curselection()
-    if selected:
-        entry = phone_listbox.get(selected[0])
-        phone_number = entry.split(":")
-        sendPhoneNumber(phone_number)
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
