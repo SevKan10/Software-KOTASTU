@@ -1,4 +1,4 @@
-#Khai báo thư viện
+# Khai báo thư viện
 import tkinter as tk
 import speech_recognition as sr
 import keyboard
@@ -9,7 +9,7 @@ import requests
 #----------------------------------------------------------------------------------------------------------------------------------
 
 
-#Hàm thực hiện copy patse
+# Hàm thực hiện copy patse
 def paste_string_in_any_field(message):
     pyperclip.copy(message)
     pyautogui.hotkey('ctrl', 'v')
@@ -17,7 +17,7 @@ def paste_string_in_any_field(message):
 #----------------------------------------------------------------------------------------------------------------------------------
 
 
-#Hàm gửi dữ liệu lên Blynk
+# Hàm gửi dữ liệu lên Blynk
 def sendData(pin, value, i):
     url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&{pin}={value}"
     response = requests.get(url)
@@ -32,7 +32,7 @@ def sendData(pin, value, i):
 #----------------------------------------------------------------------------------------------------------------------------------
 
 
-#Hàm nghe và điền
+# Hàm nghe và điền
 def listenAndEnter():
     status_label.config(text="Vui lòng nhập văn bản...")
     pygame.mixer.music.load("beep.wav")
@@ -52,7 +52,7 @@ def listenAndEnter():
         status_label.config(text="Lỗi kết nối; {0}".format(e))
 #----------------------------------------------------------------------------------------------------------------------------------
 
-#Hàm nghe và điều khiển thiết bị
+# Hàm nghe và điều khiển thiết bị
 def listenAndControl():
     status_label.config(text="Vui lòng nhập lệnh điều khiển...")
     pygame.mixer.music.load("noise.wav")
@@ -107,7 +107,7 @@ def listenAndControl():
 #----------------------------------------------------------------------------------------------------------------------------------
 
 
-#Khởi tạo giao diện đồ họa
+# Khởi tạo giao diện đồ họa
 root = tk.Tk()
 root.geometry("400x200")
 root.title("Voice Typing and Control Device")
@@ -117,14 +117,14 @@ status_label.pack(pady=10)
 #----------------------------------------------------------------------------------------------------------------------------------
 
 
-#Khởi tạo mic và phát âm
+# Khởi tạo mic và phát âm
 recognizer = sr.Recognizer()
 mic = sr.Microphone()
 pygame.mixer.init()
 #----------------------------------------------------------------------------------------------------------------------------------
 
 
-#Tạo phím tắt
+# Tạo phím tắt
 keyboard.add_hotkey('windows+ctrl+alt+shift+m', listenAndEnter)
 keyboard.add_hotkey('windows+ctrl+alt+shift+h', listenAndControl)
 root.mainloop()

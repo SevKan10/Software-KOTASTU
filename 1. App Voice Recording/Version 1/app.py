@@ -1,3 +1,4 @@
+# Khai báo thư viện
 import tkinter as tk
 import threading
 import time
@@ -7,22 +8,30 @@ import pyperclip
 import pyautogui
 import pygame.mixer
 import requests
+#----------------------------------------------------------------------------------------------------------------------------------
 
+# Hàm thực hiện copy patse
 def paste_string_in_any_field(message):
     pyperclip.copy(message)
     pyautogui.hotkey('ctrl', 'v')
     print("Đã dán tin nhắn: ", message)
+#----------------------------------------------------------------------------------------------------------------------------------
 
+# Hàm gửi dữ liệu lên Blynk
 def sendData(pin, value, i):
     url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&{pin}={value}"
     response = requests.get(url)
+
+    # Kiểm tra tín hiệu request
     if response.status_code == 200:
         print(f"Dữ liệu đã được gửi thành công. Đèn {i} đã được {value}")
         status_label.config(text=f"Đèn {i} đã được {value}")
     else:
         print("Có lỗi xảy ra:", response.status_code, response.text)
         status_label.config(text=f"Có lỗi xảy ra khi thay đổi đèn {i}: {response.status_code} {response.text}")
+#----------------------------------------------------------------------------------------------------------------------------------
 
+# Hàm nghe và điền
 def listen_and_send():
     status_label.config(text="Vui lòng nhập văn bản...")
     pygame.mixer.music.load("beep.wav")
@@ -40,7 +49,9 @@ def listen_and_send():
         status_label.config(text="Không thể nhận dạng giọng nói")
     except sr.RequestError as e:
         status_label.config(text="Lỗi kết nối; {0}".format(e))
+#----------------------------------------------------------------------------------------------------------------------------------
 
+# Hàm nghe và điều khiển thiết bị
 def listen_and_control():
     status_label.config(text="Vui lòng nhập lệnh điều khiển...")
     pygame.mixer.music.load("noise.wav")
@@ -94,6 +105,7 @@ def listen_and_control():
         status_label.config(text=f"Lỗi kết nối; {e}")
     finally:
         status_label.config(text="Sẵn sàng")
+        
 def start_listening_thread():
     if mode.get() == "text":
         thread = threading.Thread(target=listen_and_send)
