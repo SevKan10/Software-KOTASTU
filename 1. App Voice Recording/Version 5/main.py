@@ -42,7 +42,7 @@ def sendPhoneNumber(phone_number):
     
     if response.status_code == 200:
         print(f"Số điện thoại {phone_number} đã được gửi thành công.")
-        status_label.config(text=f"Số điện thoại {phone_number} đã được gửi thành công.")
+        status_label.config(text=f"Số điện thoại {phone_number} đã được gọi thành công.")
         pygame.mixer.music.load("call.wav")
         pygame.mixer.music.play()
     else:
@@ -94,7 +94,6 @@ def listenAndEnter():
             "dấu chấm hỏi"      : ("?") ,
             "dấu hai chấm"      : (":") ,
             "dấu chấm phẩy"     : (";") ,
-            "dấu gạch ngang"    : ("-") ,
             "dấu cộng"          : ("+") ,
             "dấu trừ"           : ("-") ,
             "dấu sao"           : ("*") ,
@@ -102,6 +101,7 @@ def listenAndEnter():
             "dấu chia"          : (":") ,
             "dấu mũ"            : ("^") ,
             "dấu gạch chéo"     : ("/") ,
+            "dấu gạch ngang"    : ("-") ,
             "dấu phần trăm"     : ("%") ,
             "dấu thăng"         : ("#") ,
             "dấu a vòng"        : ("@") ,
