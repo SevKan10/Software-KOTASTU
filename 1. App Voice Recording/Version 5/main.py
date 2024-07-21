@@ -1,3 +1,4 @@
+# Khai báo thư viện
 import tkinter as tk
 from tkinter import messagebox
 import speech_recognition as sr
@@ -6,7 +7,19 @@ import pyautogui
 import pygame.mixer
 import requests
 import keyboard
-import os
+import threading
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# Khởi tạo các đối tượng chỉ khi cần thiết
+recognizer = None
+mic = None
+
+def initialize_recognizer():
+    global recognizer, mic
+    if not recognizer or not mic:
+        recognizer = sr.Recognizer()
+        mic = sr.Microphone()
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
@@ -20,7 +33,14 @@ def pasteString(message):
 
 # Hàm in dấu câu
 def printSign(signDef):
-    pasteString(signDef)
+    if signDef == " ":
+        pyautogui.press('space')
+        pygame.mixer.music.load("Ok_1.wav")
+        pygame.mixer.music.play()
+    else:
+        pasteString(signDef)
+        pygame.mixer.music.load("Ok_1.wav")
+        pygame.mixer.music.play()
     status_label.config(text="Văn bản của bạn: " + signDef)
 
 #----------------------------------------------------------------------------------------------------------------------------------
@@ -30,51 +50,60 @@ def onDoubleClick(event):
     selected = phone_listbox.curselection()
     if selected:
         entry = phone_listbox.get(selected[0])
-        phone_number = entry.split(":")[1]  # Lấy số điện thoại từ chuỗi
-        sendPhoneNumber(phone_number)
+        name, phone_number = entry.split(":")
+        sendPhoneNumber(phone_number.strip())
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
 # Hàm gửi số điện thoại lên Blynk
-def sendPhoneNumber(phone_number): 
-    url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&v2={phone_number}"
-    response = requests.get(url)
+def sendPhoneNumber(phone_number):
+    def send_request(phone_number):
+        print(phone_number)
+        url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&v2={phone_number}"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            print(f"Số điện thoại {phone_number} đã được gửi thành công.")
+            status_label.config(text=f"Số điện thoại {phone_number} đã được gọi thành công.")
+            pygame.mixer.music.load("call.wav")
+            pygame.mixer.music.play()
+        else:
+            print("Có lỗi xảy ra:", response.status_code, response.text)
+            status_label.config(text=f"Có lỗi xảy ra khi gửi số điện thoại {phone_number}: {response.status_code} {response.text}")
+        phone_number = ""
     
-    if response.status_code == 200:
-        print(f"Số điện thoại {phone_number} đã được gửi thành công.")
-        status_label.config(text=f"Số điện thoại {phone_number} đã được gọi thành công.")
-        pygame.mixer.music.load("call.wav")
-        pygame.mixer.music.play()
-    else:
-        print("Có lỗi xảy ra:", response.status_code, response.text)
-        status_label.config(text=f"Có lỗi xảy ra khi gửi số điện thoại {phone_number}: {response.status_code} {response.text}")
+    threading.Thread(target=send_request, args=(phone_number,)).start()
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
 # Hàm gửi dữ liệu lên Blynk
-def sendData(pin, value, i): 
-    url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&{pin}={value}"
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        print(f"Dữ liệu đã được gửi thành công. Đèn {i} đã được {value}")
-        status_label.config(text=f"Đèn {i} đã được {value}")
-        status = value[:2]
+def sendData(pin, value, i):
+    def send_request(pin, value, i):
+        url = f"https://sgp1.blynk.cloud/external/api/update?token=s4IEZXPS6DFlYAACZC_6z-rNmdU1erLH&{pin}={value}"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            print(f"Dữ liệu đã được gửi thành công. Đèn {i} đã được {value}")
+            status_label.config(text=f"Đèn {i} đã được {value}")
+            status = value[:2]
 
-        if "On" in status:
-            pygame.mixer.music.load("on.wav")
-            pygame.mixer.music.play()
+            if "On" in status:
+                pygame.mixer.music.load("on.wav")
+                pygame.mixer.music.play()
+            else:
+                pygame.mixer.music.load("off.wav")
+                pygame.mixer.music.play()
         else:
-            pygame.mixer.music.load("off.wav")
-            pygame.mixer.music.play()
-    else:
-        print("Có lỗi xảy ra:", response.status_code, response.text)
-        status_label.config(text=f"Có lỗi xảy ra khi thay đổi đèn {i}: {response.status_code} {response.text}")
+            print("Có lỗi xảy ra:", response.status_code, response.text)
+            status_label.config(text=f"Có lỗi xảy ra khi thay đổi đèn {i}: {response.status_code} {response.text}")
+    
+    threading.Thread(target=send_request, args=(pin, value, i)).start()
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
 # Hàm nghe và điền
 def listenAndEnter():
+    initialize_recognizer()
     status_label.config(text="Vui lòng nhập văn bản...")
     pygame.mixer.music.load("Input.wav")
     pygame.mixer.music.play()
@@ -100,12 +129,13 @@ def listenAndEnter():
             "dấu nhân"          : ("x") ,
             "dấu chia"          : (":") ,
             "dấu mũ"            : ("^") ,
-            "dấu gạch chéo"     : ("/") ,
+            "dấu gạch chéo"     : ("/") , 
             "dấu gạch ngang"    : ("-") ,
             "dấu phần trăm"     : ("%") ,
             "dấu thăng"         : ("#") ,
             "dấu a vòng"        : ("@") ,
             "dấu a dòng"        : ("@") ,
+            "dấu a còng"        : ("@") ,
             "dấu ngoặc đơn mở"  : ("(") ,
             "dấu ngoặc đơn đóng": (")") ,
             "dấu ngoặc kép mở"  : ("\""),
@@ -135,6 +165,7 @@ def listenAndEnter():
 
 # Hàm nghe và điều khiển thiết bị
 def listenAndControl():
+    initialize_recognizer()
     status_label.config(text="Vui lòng nhập lệnh điều khiển...")
     pygame.mixer.music.load("Input.wav")
     pygame.mixer.music.play()
@@ -209,7 +240,7 @@ def savePhoneNumber():
     top = tk.Toplevel(root)
     top.title("Nhập thông tin liên lạc")
     top.geometry("400x200")
-    top.configure(bg='#97CADB')  # Màu nền cửa sổ
+    top.configure(bg='#97CADB')
 
     tk.Label(top, text="Nhập tên:", bg='#97CADB', font=('Helvetica', 12, 'bold')).pack(pady=10)
     name_entry = tk.Entry(top, width=40)
@@ -226,14 +257,16 @@ def savePhoneNumber():
 # Hàm tải danh bạ từ tệp
 def loadPhoneNumbers():
     phone_listbox.delete(0, tk.END)
-    if os.path.exists("Contact.txt"):
-        try:
-            with open("Contact.txt", "r", encoding="utf-8") as file:
-                for line in file:
-                    phone_listbox.insert(tk.END, line.strip())
-        except Exception as e:
-            print(f"Lỗi khi đọc dữ liệu: {e}")
-            status_label.config(text=f"Có lỗi xảy ra khi tải dữ liệu: {e}")
+    try:
+        with open("Contact.txt", "r", encoding="utf-8") as file:
+            contacts = file.readlines()
+            for contact in contacts:
+                phone_listbox.insert(tk.END, contact.strip())
+    except FileNotFoundError:
+        open("Contact.txt", "w", encoding="utf-8").close()
+    except Exception as e:
+        print(f"Error loading contacts: {e}")
+        status_label.config(text=f"Error loading contacts: {e}")
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
@@ -242,7 +275,7 @@ def callPhoneNumber():
     top = tk.Toplevel(root)
     top.title("Nhập số điện thoại")
     top.geometry("400x200")
-    top.configure(bg='#97CADB')  # Màu nền cửa sổ
+    top.configure(bg='#97CADB')
 
     tk.Label(top, text="Vui lòng nhập số điện thoại:", bg='#97CADB', font=('Helvetica', 12, 'bold')).pack(pady=10)
     phone_entry = tk.Entry(top, width=40)
@@ -264,7 +297,7 @@ def callPhoneNumber():
 root = tk.Tk()
 root.geometry("500x400")
 root.title("Voice Typing and Control Device")
-root.configure(bg='#97CADB')  # Màu nền chính
+root.configure(bg='#97CADB')
 
 status_label = tk.Label(root, text="Nhấn nút để soạn thảo và điều khiển", bg='#97CADB', font=('Helvetica', 12))
 status_label.pack(pady=10)
@@ -281,11 +314,7 @@ loadPhoneNumbers()
 #----------------------------------------------------------------------------------------------------------------------------------
 
 # Khởi tạo mic và phát âm
-recognizer = sr.Recognizer()
-mic = sr.Microphone()
 pygame.mixer.init()
-
-#----------------------------------------------------------------------------------------------------------------------------------
 
 # Tạo phím tắt
 keyboard.add_hotkey('windows+ctrl+alt+shift+m', listenAndEnter) 
