@@ -239,7 +239,7 @@ def savePhoneNumber():
 
     top = tk.Toplevel(root)
     top.title("Nhập thông tin liên lạc")
-    top.geometry("400x200")
+    top.geometry("400x300")
     top.configure(bg='#97CADB')
 
     tk.Label(top, text="Nhập tên:", bg='#97CADB', font=('Helvetica', 12, 'bold')).pack(pady=10)
