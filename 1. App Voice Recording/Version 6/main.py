@@ -286,7 +286,7 @@ loadPhoneNumbers()
 
 # Khởi tạo mic và phát âm
 recognizer = sr.Recognizer()
-mic = sr.Microphone()
+mic =sr.Microphone()
 pygame.mixer.init()
 
 #----------------------------------------------------------------------------------------------------------------------------------
@@ -297,7 +297,7 @@ keyboard.add_hotkey('windows+ctrl+alt+shift+m', listenAndEnter)
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
-# Chạy chương trình chính
+# Chạy chương trình chính6
 def backgroundListener():
     print("Chương trình đang chạy nền. Nhấn tổ hợp phím 'windows+ctrl+alt+shift+m' để kích hoạt nhận dạng giọng nói.")
     keyboard.wait()  # Chờ đợi tổ hợp phím để chương trình không kết thúc
