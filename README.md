@@ -1,13 +1,24 @@
-I. Overview:
-  KOTASTU is an innovative device that helps people with hand disabilities control home appliances and computers with their feet. 
-  The system includes a foot-controlled mouse and a chair that integrates advanced functions such as voice control and facial recognition.
-II. Source code include 2 parts:
-  Part 1: App voice recording 
-    This app will recieve voice from user and enter words into computer or control device by voice via the internet (sever Blynk).
-    App is coded by Python programming language. Code on Visual Studio Code then export by command on terminal, this command is "pyinstaller --onefile --noconsole --icon=[file name icon] [file name program].py".
-    After export .exe file. Compressed file .zip by RAR and add to NSIS app export to file installer.
-  Part 2: Web control device
-    This web used to control device, set time auto on or off and call to optional phone number, the data will send to sever Blynk.
-    Web is coded by HTML, CSS and JavaScript. Code on Visual Studio Code. Web can run local host or public on Github. 
-III. Owned:
-  This source code is owned and written by SevKan (Khuu Trieu Minh Khang)
+
+# Overview
+
+KOTASTU is an innovative device designed to assist individuals with hand disabilities in controlling home appliances and computers using their feet. The system includes a foot-controlled mouse and a chair with advanced features such as voice control and facial recognition.
+
+## Source Code Description
+
+### Part 1: App Voice Recording
+
+This application captures user voice input and sends commands to control devices or input text into a computer via the internet (Blynk server). The app is written in Python and developed using Visual Studio Code. To export the application to an executable file (.exe), use the following command in the terminal:
+
+```bash
+pyinstaller --onefile --noconsole --icon=[file name icon] [file name program].py
+```
+
+The resulting .exe file is then compressed into a .zip file using RAR and packaged into an installer file using NSIS.
+
+### Part 2: Web Control Device
+
+This web application allows users to control devices, schedule automatic on/off times, and make calls to optional phone numbers. Data is sent to the Blynk server. The web interface is developed using HTML, CSS, and JavaScript in Visual Studio Code. It can be run locally or hosted publicly on GitHub.
+
+## Ownership
+
+This source code is owned and authored by SevKan (Khuu Trieu Minh Khang).
